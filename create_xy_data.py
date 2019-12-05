@@ -14,13 +14,13 @@ import ctypes
 L = 16
 xy = XY(T = 1, L = L)
 
-t = np.linspace(0.5, 1.5, 2)
+t = np.linspace(0.5, 1.5, 50)
 ecb = lambda c = None: xy.get_energy()
 
 energy = []
 states = []
 
-M = 10000
+M = 5000
 N = 1
 for t_ in t:
 
