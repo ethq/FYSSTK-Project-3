@@ -1,5 +1,10 @@
 \begin{thebibliography}{1}
 
+\bibitem{PhysRevB.97.045207}
+Matthew J.~S. Beach, Anna Golubeva, and Roger~G. Melko.
+\newblock Machine learning vortices at the kosterlitz-thouless transition.
+\newblock {\em Phys. Rev. B}, 97:045207, Jan 2018.
+
 \bibitem{PhysRevLett.17.1133}
 N.~D. Mermin and H.~Wagner.
 \newblock Absence of ferromagnetism or antiferromagnetism in one- or
@@ -11,5 +16,28 @@ Peter Olsson and Petter Minnhagen.
 \newblock On the helicity modulus, the critical temperature and monte carlo
   simulations for the two-dimensional {XY}-model.
 \newblock {\em Physica Scripta}, 43(2):203--209, feb 1991.
+
+\bibitem{LeCun2012}
+Yann~A. LeCun, L{\'e}on Bottou, Genevieve~B. Orr, and Klaus-Robert M{\"u}ller.
+\newblock {\em Efficient BackProp}, pages 9--48.
+\newblock Springer Berlin Heidelberg, Berlin, Heidelberg, 2012.
+
+\bibitem{degrad}
+K.~{He} and J.~{Sun}.
+\newblock Convolutional neural networks at constrained time cost.
+\newblock In {\em 2015 IEEE Conference on Computer Vision and Pattern
+  Recognition (CVPR)}, pages 5353--5360, June 2015.
+
+\bibitem{resnet}
+K.~{He}, X.~{Zhang}, S.~{Ren}, and J.~{Sun}.
+\newblock Deep residual learning for image recognition.
+\newblock In {\em 2016 IEEE Conference on Computer Vision and Pattern
+  Recognition (CVPR)}, pages 770--778, June 2016.
+
+\bibitem{PhysRevLett.39.1201}
+David~R. Nelson and J.~M. Kosterlitz.
+\newblock Universal jump in the superfluid density of two-dimensional
+  superfluids.
+\newblock {\em Phys. Rev. Lett.}, 39:1201--1205, Nov 1977.
 
 \end{thebibliography}
