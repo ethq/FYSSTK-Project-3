@@ -33,13 +33,15 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import LogisticRegression
 
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
 from sklearn.metrics import classification_report, confusion_matrix
 
 from sklearn.linear_model import Ridge, LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
+
+from imblearn.over_sampling import SMOTE
 
 rc('text', usetex=True)
 
@@ -60,6 +62,8 @@ Input:
     
     plot_data_spacing: [Integer] When plotting interpolated energy curve, how many datapoints to cut between
     
+    subsample: [Integer] Pick every N'th instance for use in design matrix instead of all. Handy for big datasets(e.g. 5k measurements on L > 16)
+    
     verbose:  [Bool]  Talkative or not
 """
 class Analyze_XY:
@@ -69,7 +73,8 @@ class Analyze_XY:
                  X_full = True,
                  plot_data_spacing = 3,
                  verbose = True,
-                 plotty = True):
+                 plotty = True, 
+                 subsample = 1):
         data = None
         
         fname = 'Data/xy_data_' + fname + '.dat'
@@ -133,7 +138,7 @@ class Analyze_XY:
         self.get_tkt()
         self.plot(only_save = True)
         
-        self.create_design_matrix()
+        self.create_design_matrix(subsample = subsample)
         
         print('On lattice L = %d, T = %.2f' % (self.L, self.tkt['MCMC']))
     
@@ -172,6 +177,19 @@ class Analyze_XY:
         
         return x, input_shape
         
+    def restore_energy_labels(self):
+        xy = XY(T = 1, L = self.L)
+        self.e_labels = np.array([xy.get_energy(np.reshape(s, (self.L, self.L))) for s in self.X])
+    
+    def reduce_data(self, nskip):
+        # We want to skip nskip rows, pick one, skip again etc
+        n_samples = self.X.shape[0] // nskip
+        ind = np.random.randint(self.X.shape[0], size = n_samples)
+        
+        # Create smaller dataset
+        self.X = self.X[ind]
+        self.labels = self.labels[ind]
+        self.e_labels = self.e_labels[ind]
         
     """
     Trains a (convolutional) neural network on the dataset using Keras.
@@ -190,27 +208,23 @@ class Analyze_XY:
                   ):
         n_classes = 2
         
-#        # Test/train split
-#        print(self.X.shape, self.labels.shape)
+#        self.reduce_data(20)
+#
+#        # Oversample to fix class imbalance
+#        sm = SMOTE()
+#        self.X, self.labels = sm.fit_resample(self.X, self.labels)
+        
+        # Recalculate energy for SMOTEd instances
+#        self.restore_energy_labels()
+        
+        if self.verbose:
+            print('Done SMOTEing')
+            
+        # Test/train split
         x_train, x_test, y_train, y_test = train_test_split(self.X, self.labels, test_size = .2, shuffle = True)
-#        
-#        # Theano vs tensorflow convention check
-#        if K.image_data_format() == 'channels_first':
-#            x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
-#            x_test = x_test.reshape(x_test.shape[0], 1, img_rows, img_cols)
-#            input_shape = (1, img_rows, img_cols)
-#        else:
-#            x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
-#            x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
-#            input_shape = (img_rows, img_cols, 1)
-#        
-#        # Make sure types are right
-#        x_train = x_train.astype('float32')
-#        x_test = x_test.astype('float32')
-#        
-#        # Normalize
-#        x_train /= (2*np.pi)
-#        x_test /= (2*np.pi)
+
+        if self.verbose:
+            print('Training balance: %.2f. Testing balance: %.2f' % (np.sum(y_train)/len(y_train), np.sum(y_test)/len(y_test)))
         
         input_shape = None
         if is_cnn(model_s):
@@ -364,12 +378,9 @@ class Analyze_XY:
         
         # Now a load of shit to get a temperature axis
         pattern = "'\$-?[0-9]+.[0-9]+\$'"
-#        [print(p) for p in ax1.get_xticklabels()]
-#        print(ax1.get_xticks())
         matches = [re.search(pattern, str(p)).group(0) for p in ax1.get_xticklabels()]
         
         tick_labels = [np.round(self.energy2temp(np.float32(m.rstrip("$'").lstrip("'$"))), 2) for m in matches]
-#        print(tick_labels)
         
         # Move twinned axis ticks and label from top to bottom
         ax2.xaxis.set_ticks_position("bottom")
@@ -398,9 +409,12 @@ class Analyze_XY:
         if self.plotty:
             plt.show()
         
-        pred_class = np.round(model.predict(X_sorted)).astype(int)
+        pred_class = np.round(np.max(model.predict(X_sorted), 1)).astype(int).flatten()
+        print(X_sorted.shape)
+        print(len(pred_class))
+        print(len(self.labels))
         if self.verbose:
-            print(confusion_matrix(self.labels, pred_class))
+            print(confusion_matrix(self.labels.flatten(), pred_class))
     
     """
     Given a trained CNN, uses two methods to locate T_KT.
@@ -416,7 +430,7 @@ class Analyze_XY:
     Input:
         model:      [String] Just the name of the model used, as enumerated in get_model.py
     """
-    def tkt_from_cnn(self, model_s):
+    def tkt_from_nn(self, model_s):
         # Load best model. 
         
         # First re-create filename based on instance parameters        
@@ -455,11 +469,15 @@ class Analyze_XY:
         # Load model
         model = keras.models.load_model(path)
         
+        input_shape = None
         # Matching design matrix has been created in __init__(), but it must be prepped for cnn
-        x, input_shape = self.prepare_X_for_cnn(self.X)
+        if is_cnn(model_s):
+            x, input_shape = self.prepare_X_for_cnn(self.X)
+        else:
+            x = self.X
         
         # Model constructed and design matrix prepared, pass to more general function
-        self.tkt_from_pred(model, x, 'CNN')
+        self.tkt_from_pred(model, x, model_s)
     
     
     
@@ -470,13 +488,39 @@ class Analyze_XY:
     Input:
         full: [Boolean] whether to return all states or just one at a given temperature
         vortex: [Boolean] whether to return the raw spin configuration or the vortex representation
+        subsample: [Integer] Skips subsample-1 instances before adding one to the design matrix
     Output:
         Design matrix. Number of features equals the size of a state, 
                        number of instances equal to the number of energies/temperatures
     """ 
-    def create_design_matrix(self):   
+    def create_design_matrix(self, subsample = 1):   
         # Make sure the class is properly initialized
         assert self.tkt['MCMC'] != None
+        
+        # Design matrix filename
+        x_name = 'Data/Design matrix/X_V%d_L%d_M%d_N%d.npy' % (int(self.X_vortex), self.L, self.M, self.N)
+        
+        # Regular labels filename
+        l_name = 'Data/Design matrix/L_V%d_L%d_M%d_N%d.npy' % (int(self.X_vortex), self.L, self.M, self.N)
+        
+        # Energy labels filename
+        el_name = 'Data/Design matrix/EL_V%d_L%d_M%d_N%d.npy' % (int(self.X_vortex), self.L, self.M, self.N)
+        
+        # Attempt to load from file
+        try:
+            X = np.load(x_name)
+            labels = np.load(l_name)
+            e_labels = np.load(el_name)
+            
+            print('Loaded design matrix from file.')
+            
+            self.X = X
+            self.labels = labels
+            self.e_labels = e_labels
+            
+            return
+        except IOError:
+            print('Could not load design matrix, creating...')
         
         # Notational shortcut
         data = self.data
@@ -499,12 +543,18 @@ class Analyze_XY:
         ts = data['temperature']
         t_mask = (ts > self.tkt['MCMC']).astype(int)
         
+        ctr = 0
         # If we want _all_ states at the given temperature ranges, then return that
         if self.X_full:
             # Loop over temperatures
             for ei, e in enumerate(data['states']):
                 # Loop over all states at a given temperature
                 for s in data['states'][ei]:
+                    # Subsample first
+                    ctr = ctr + 1
+                    if ctr % subsample:
+                        continue
+                    
                     # Add the raw state if desired
                     if not self.X_vortex:
                         states.append(s)
@@ -526,7 +576,12 @@ class Analyze_XY:
             for i, s in enumerate(states):
                 X[i, :] = s.flatten()
             
-            # And done
+            # Save to file
+            np.save(x_name, X/(2*np.pi))
+            np.save(l_name, np.array(labels))
+            np.save(el_name, np.array(e_labels))
+            
+            # And set instance variables
             self.X = X/(2*np.pi)
             self.labels = np.array(labels)
             self.e_labels = np.array(e_labels)
@@ -666,19 +721,20 @@ if __name__ == '__main__':
 #    fname = 'L7_M500_N5'
     fname = 'L16_M5000_N1'
     # Finds TKT by itself, but worth inspecting manually as well
-    axy = Analyze_XY(fname, plotty = False)
+    axy = Analyze_XY(fname, plotty = False, subsample = 1)
 #    print(axy.tkt)
 #    axy.plot()
     
     # Ok, now we train a CNN
-    model = '3xConvPoolDrop'
-#    model = '2xConvConvPoolDrop'
+#    model = '3xConvPoolDrop'
+    model = '2xConvConvPoolDrop'
 #    model = '3xConv2xDropDense'
 #    model = '2xConvPoolDrop'
 #    model = 'ResNet50'
-    axy.train_cnn(model)
+#    model = 'nnsimple'
+#    axy.train_net(model)
     
     # Load a model and locate decision boundary
-    axy.tkt_from_cnn(model)
+    axy.tkt_from_nn(model)
     
 #    get_model('DenseNet121', (7,7,3))

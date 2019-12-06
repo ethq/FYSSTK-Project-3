@@ -234,13 +234,21 @@ def get_model(model, input_shape):
         model.add(Dense(n_classes, activation = 'softmax'))
         
         
-    elif model == 'nn_simple':
+    elif model == 'nnsimple':
         model = Sequential()
         model.add(Dense(512, activation = 'relu'))
         model.add(Dropout(.25))
-        model.add(Dense(256), activation = 'relu')
+        model.add(Dense(256, activation = 'relu'))
         model.add(Dropout(.5))
-        model.add(Dense(n_classes), activation = 'relu')
+        model.add(Dense(n_classes, activation = 'softmax'))
+   
+    elif model == 'nnsimpler':
+        model = Sequential()
+        model.add(Dense(128, activation = 'relu'))
+        model.add(Dropout(.25))
+        model.add(Dense(128, activation = 'relu'))
+        model.add(Dropout(.1))
+        model.add(Dense(n_classes, activation = 'softmax'))
     
     # Compile model before returning       
     model.compile(loss=keras.losses.binary_crossentropy,
