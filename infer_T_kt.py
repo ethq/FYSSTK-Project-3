@@ -14,12 +14,12 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
 
 fnames = [
-        'xy_data_L7_M500_N5.dat',
-        'xy_data_L10_M500_N5.dat',
-        'xy_data_L16_M500_N5.dat'
+        'Data/xy_data_L7_M500_N5.dat',
+        'Data/xy_data_L10_M500_N5.dat',
+        'Data/xy_data_L16_M500_N5.dat'
         ]
 
-Linv = 1/np.log(np.array([10, 16]))**2
+Linv = 1/np.log(np.array([7, 10, 16]))**2
 Tkt = []
 
 # Use the heat capacity to predict transition temperature
@@ -51,8 +51,8 @@ for fname in fnames:
     
     Tkt.append(tnew[arg_tkt])
 
-Tkt = np.flip(Tkt)
-Tkt = [Tkt[1], Tkt[2]]
+#Tkt = np.flip(Tkt)
+#Tkt = [Tkt[1], Tkt[2]]
 # Do a linear plot of tkt vs L^-2. Tkt on the infinite plane should then be the intercept
 model = make_pipeline(PolynomialFeatures(1), LinearRegression())
 model.fit(Linv[:, np.newaxis], Tkt)
@@ -65,4 +65,32 @@ print('Predicted T_KT = %.2f' % model.steps[1][1].intercept_)
 
 plt.plot(Linv_new, Tkt_pred)
 plt.plot(Linv, Tkt, 'o')
+
+Tkt_5k = np.array([1.219, 1.198])
+L_5k = np.array([8, 16])
+Linv_5k = 1/np.log(L_5k)**2
+
+model = make_pipeline(PolynomialFeatures(1), LinearRegression())
+model.fit(Linv_5k[:, np.newaxis], Tkt_5k)
+
+Tkt_pred2 = model.predict(Linv_new[:, np.newaxis])
+
+plt.plot(Linv_new, Tkt_pred2)
+plt.plot(Linv_5k, Tkt_5k, 'o')
+
+print('Predicted T_KT = %.2f' % model.steps[1][1].intercept_)
+
+plt.legend([
+        'Fit to $T_{KT}$ from 500 measurements',
+        '$T_{KT}$ from 500 measurements',
+        'Fit to $T_{KT}$ from 5000 measurements',
+        '$T_{KT}$ from 5000 measurements'
+        ])
+    
+plt.title('$T_{KT}$ scaling with lattice dimension')
+plt.xlabel('$(log\ L)^{-2}$')
+plt.ylabel('Temperature')
+
+
+
 plt.show()

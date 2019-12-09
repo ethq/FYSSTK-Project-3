@@ -10,17 +10,21 @@ import keras
 from keras import backend as K
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.utils import plot_model
+from keras.wrappers.scikit_learn import KerasClassifier
 
 # Standard imports
 import numpy as np
 import pickle
 import matplotlib.pyplot as plt
+from matplotlib import ticker
 from matplotlib import rc
 import pandas as pd
+import seaborn as sns
 
 # My stuff
 from XY import XY
 from get_model import get_model, is_cnn, requires_rgb, is_nn, enumerate_models
+from fancy_confusion_matrix import galplot, plot_cm
 
 # Utility imports
 from itertools import product
@@ -33,8 +37,10 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import LogisticRegression
 
+from sklearn.ensemble import AdaBoostClassifier
+
 from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
 from sklearn.linear_model import Ridge, LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
@@ -44,6 +50,7 @@ from sklearn.pipeline import make_pipeline
 from imblearn.over_sampling import SMOTE
 
 rc('text', usetex=True)
+
 
 """
 Should be put in a package but I cannot be bothered due to the fun times that is Python packages.
@@ -74,7 +81,8 @@ class Analyze_XY:
                  plot_data_spacing = 3,
                  verbose = True,
                  plotty = True, 
-                 subsample = 1):
+                 subsample = 1,
+                 boost_nn = False):
         data = None
         
         fname = 'Data/xy_data_' + fname + '.dat'
@@ -84,16 +92,34 @@ class Analyze_XY:
         self.fname = fname.lstrip('Data/xy_data_').rstrip('.dat')
         self.data = data
         
+        # Whether to supply vortex config or spin config
         self.X_vortex = X_vortex
+        
+        # Whether to compute the design matrix using _all_ datapoints or just a subset
         self.X_full = X_full
         
+        # Whether or not to AdaBoost a regular neural network, if trained
+        self.boost_nn = boost_nn
+        
+        # Whether or not to plot stuff
         self.plotty = plotty
+        
+        # Talkative?
         self.verbose = verbose
         
+        # Lattice dimension
         self.L = self.get_L_from_id(self.fname)
+        
+        # Energy
         self.energy = np.array(data['energy'])
+        
+        # Temperature
         self.t = np.array(data['temperature'])
+        
+        # States
         self.states = np.array(data['states'])
+        
+        
         
         # Get M - the number of measurements at fixed temperature
         # and N - the number of sweeps between measurements
@@ -147,6 +173,7 @@ class Analyze_XY:
     def get_L_from_id(self, fid):
         s = '_M[0-9]+_N[0-9]+'
         return int(fid.rstrip(re.search(s, fid).group(0)).lstrip('L'))
+    
     
     """
     Input: a design matrix
@@ -210,15 +237,15 @@ class Analyze_XY:
         
 #        self.reduce_data(20)
 #
-#        # Oversample to fix class imbalance
+#        # Generate new instances to fix any class imbalance(relevant for (16,) set)
 #        sm = SMOTE()
 #        self.X, self.labels = sm.fit_resample(self.X, self.labels)
         
         # Recalculate energy for SMOTEd instances
 #        self.restore_energy_labels()
         
-        if self.verbose:
-            print('Done SMOTEing')
+#        if self.verbose:
+#            print('Done SMOTEing')
             
         # Test/train split
         x_train, x_test, y_train, y_test = train_test_split(self.X, self.labels, test_size = .2, shuffle = True)
@@ -254,16 +281,60 @@ class Analyze_XY:
         # We also want to store our best model, as judged by accuracy
         mc = ModelCheckpoint('Models/Epoch{epoch:02d}_Acc{val_acc:.2f}_V%d_L%d_M%d_N%d_%s.h5' % (int(self.X_vortex), self.L, self.M, self.N, model_s) , monitor='val_acc', mode='max', verbose=1, save_best_only=True)
         
-        # Fit and record history
-        history = model.fit(x_train, y_train,
-                  batch_size=batch_size,
-                  epochs=epochs,
-                  verbose=1,
-                  callbacks = [es, mc],
-                  validation_split = 0.1)
-        
-        # Get the score on the unseen test set
-        score = model.evaluate(x_test, y_test, verbose=0)
+        # Check for boosting
+        if self.boost_nn and is_nn(model_s):
+            # Different convention for labels. AdaBoostClassifier expects Y to be of form (nsamples,)
+            # This in turn means models in get_model must be modified _WHEN_ used in conjuction with AdaBoostClf
+            y_test = y_test[:, 0] + y_test[:, 1]*-1
+            y_train = y_train[:, 0] + y_train[:, 1]*-1
+            
+            y_test = (y_test+1)/2
+            y_train = (y_train+1)/2
+            
+            build = lambda: get_model(model_s, input_shape)
+            est = KerasClassifier(build_fn = build, epochs = epochs, batch_size = batch_size, verbose = 0)
+            
+            model = AdaBoostClassifier(base_estimator = est)
+            x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size = .1)
+            print(x_train.shape, y_train.shape)
+            model.fit(x_train, y_train)
+            
+            # Need to construct our own history manually
+            pred_val = model.staged_predict(x_val)
+            print(pred_val)
+            print(y_val)
+            pred_tr = model.staged_predict(x_train)
+            
+            accs_val = []
+            accs_train = []
+            
+            for predv, predr in zip(pred_val, pred_tr):
+                accs_val.append(accuracy_score(predv, y_val))
+                accs_train.append(accuracy_score(predr, y_train))
+            
+            # Bit lazy, but using accuracy is less hassle. But then we need to trick ourselves:
+            history = {
+                    'history': {'loss': accs_train,
+                    'val_loss': accs_val
+                    }
+                    }
+            score = (-1, accuracy_score(model.predict(x_test), y_test))
+            
+            # If it's an AdaBoosted neural net, we won't do early stopping or save/load. 
+            # It's hackish, but we just store it in instance. Why? Because we already know
+            # it'll perform worse than a CNN, so it's not worth the effort at the moment.
+            self.model_adaboost = model
+        else:
+            # Fit and record history
+            history = model.fit(x_train, y_train,
+                      batch_size=batch_size,
+                      epochs=epochs,
+                      verbose=1,
+                      callbacks = [es, mc],
+                      validation_split = 0.1)
+            
+            # Get the score on the unseen test set
+            score = model.evaluate(x_test, y_test, verbose=0)
         
         # Squawk if desired
         if self.verbose:
@@ -278,6 +349,8 @@ class Analyze_XY:
         ax.plot(history.history['val_loss'], label = 'val')
         ax.set_xlabel('Epoch')
         ax.set_ylabel('Loss')
+        if is_nn(model_s) and self.boost_nn:
+            ax.set_ylabel('Accuracy')
         ax.set_title('Model: %s, Test score: %.3f' % (model_s, score[1]))
         ax.legend()
         
@@ -361,7 +434,11 @@ class Analyze_XY:
         # Add some extra space for the second axis at the bottom
         fig.subplots_adjust(bottom=0.2)
         
-        ax1.set_title(r"ConvNet prediction: $T_{KT}$ = %.3f" % self.tkt[model_s])
+        net_type = 'ConvNet'
+        if is_nn(model_s):
+            net_type = 'NeuralNet'
+        
+        ax1.set_title(r"%s prediction: $T_{KT}$ = %.3f" % (net_type, self.tkt[model_s]))
         ax1.set_xlabel('Energy')
         ax1.set_ylabel('Probability')
         
@@ -409,12 +486,32 @@ class Analyze_XY:
         if self.plotty:
             plt.show()
         
-        pred_class = np.round(np.max(model.predict(X_sorted), 1)).astype(int).flatten()
-        print(X_sorted.shape)
-        print(len(pred_class))
-        print(len(self.labels))
+        # Plot/save confusion matrix
+        y_pred = np.round(model.predict(X_sorted)[:, 0]).astype(int).flatten()
+        y_true = self.labels.flatten()
+        
+        cm = np.array(confusion_matrix(y_true, y_pred))
+        
+        # seaborn heatmap broken in last update apparently. fix manually or text goes poof
+        plt.figure(figsize=(10,7))
+        ax = sns.heatmap(cm, annot=True, linewidths=1, fmt = 'd')
+        ax.set(yticks=[-.5, 1.5], 
+               xticks=[0, 1])
+        ax.set_ylim([-0, 2])
+
+        ax.yaxis.set_major_locator(ticker.IndexLocator(base=1, offset=0.5))
+        ax.xaxis.set_major_locator(ticker.IndexLocator(base=1, offset=0.5))
+        
+        plt.xlabel('Predicted')
+        plt.ylabel('Truth')
+        plt.show()
+        plt.savefig('Plots/Confusion Matrix/V%d_L%d_M%d_N%d_%s.png' % (int(self.X_vortex), self.L, self.M, self.N, model_s) )
+        
+        if self.plotty:
+            plt.show()
+
         if self.verbose:
-            print(confusion_matrix(self.labels.flatten(), pred_class))
+            print(cm)
     
     """
     Given a trained CNN, uses two methods to locate T_KT.
@@ -432,6 +529,10 @@ class Analyze_XY:
     """
     def tkt_from_nn(self, model_s):
         # Load best model. 
+        # If it's neural net and adaboosted, it's stored in class instance
+        if self.boost_nn and is_nn(model_s):
+            self.tkt_from_pred(self.model_adaboost, self.X, model_s)
+            return
         
         # First re-create filename based on instance parameters        
         fid = 'V%d_L%d_M%d_N%d_%s.h5' % (int(self.X_vortex), self.L, self.M, self.N, model_s)
@@ -718,21 +819,21 @@ if __name__ == '__main__':
 #    d = plot_energies()
     
     # Do a complete analysis
-#    fname = 'L7_M500_N5'
-    fname = 'L16_M5000_N1'
+    fname = 'L7_M500_N5'
+#    fname = 'L16_M5000_N1'
     # Finds TKT by itself, but worth inspecting manually as well
-    axy = Analyze_XY(fname, plotty = False, subsample = 1)
+    axy = Analyze_XY(fname, plotty = False, subsample = 1, boost_nn = True)
 #    print(axy.tkt)
 #    axy.plot()
     
     # Ok, now we train a CNN
 #    model = '3xConvPoolDrop'
-    model = '2xConvConvPoolDrop'
+#    model = '2xConvConvPoolDrop'
 #    model = '3xConv2xDropDense'
 #    model = '2xConvPoolDrop'
 #    model = 'ResNet50'
-#    model = 'nnsimple'
-#    axy.train_net(model)
+    model = 'nnsimpler'
+    axy.train_net(model)
     
     # Load a model and locate decision boundary
     axy.tkt_from_nn(model)

@@ -218,7 +218,7 @@ class XY:
             energies.append( energy )
             
             if (abs(energy-energy_temp)/abs(energy) < self.tol) and k > min_eq:
-                print('Eq reached at T = %.1f, E = %.2f, sweep #%d' % (self.T,energy, k))
+                tqdm.write('Eq reached at T = %.1f, E = %.2f, sweep #%d' % (self.T,energy, k))
                 break
             energy_temp = energy
         

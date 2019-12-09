@@ -53,7 +53,8 @@ def enumerate_models():
             'DenseNet201'
             ]
     nns = [
-            'nn_simple'
+            'nnsimple',
+            'nnsimpler'
             ]
     
     return  cnns, nns
@@ -209,7 +210,6 @@ def get_model(model, input_shape):
         
         model.add(Flatten())
         model.add(Dense(512, activation = 'relu'))
-        model.add(Dropout(0.1))
         model.add(Dense(n_classes, activation = 'softmax'))
         
     elif model == '3xConvPoolDrop': 
@@ -230,7 +230,6 @@ def get_model(model, input_shape):
         
         model.add(Flatten())
         model.add(Dense(512, activation = 'relu'))
-        model.add(Dropout(0.1))
         model.add(Dense(n_classes, activation = 'softmax'))
         
         
@@ -248,7 +247,7 @@ def get_model(model, input_shape):
         model.add(Dropout(.25))
         model.add(Dense(128, activation = 'relu'))
         model.add(Dropout(.1))
-        model.add(Dense(n_classes, activation = 'softmax'))
+        model.add(Dense(1, activation = 'softmax'))
     
     # Compile model before returning       
     model.compile(loss=keras.losses.binary_crossentropy,
