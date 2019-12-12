@@ -51,6 +51,10 @@ from imblearn.over_sampling import SMOTE
 
 rc('text', usetex=True)
 
+class Bunch:
+    def __init__(self):
+        pass
+
 
 """
 Should be put in a package but I cannot be bothered due to the fun times that is Python packages.
@@ -294,15 +298,14 @@ class Analyze_XY:
             build = lambda: get_model(model_s, input_shape)
             est = KerasClassifier(build_fn = build, epochs = epochs, batch_size = batch_size, verbose = 0)
             
-            model = AdaBoostClassifier(base_estimator = est)
+            model = AdaBoostClassifier(base_estimator = est, n_estimators = 1)
             x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size = .1)
             print(x_train.shape, y_train.shape)
             model.fit(x_train, y_train)
-            
+            self.MODEL = model
+            self.XTE = x_test
             # Need to construct our own history manually
             pred_val = model.staged_predict(x_val)
-            print(pred_val)
-            print(y_val)
             pred_tr = model.staged_predict(x_train)
             
             accs_val = []
@@ -313,11 +316,10 @@ class Analyze_XY:
                 accs_train.append(accuracy_score(predr, y_train))
             
             # Bit lazy, but using accuracy is less hassle. But then we need to trick ourselves:
-            history = {
-                    'history': {'loss': accs_train,
-                    'val_loss': accs_val
-                    }
-                    }
+            history = Bunch()
+            history.history = {'loss': accs_train,
+                                'val_loss': accs_val
+                                }
             score = (-1, accuracy_score(model.predict(x_test), y_test))
             
             # If it's an AdaBoosted neural net, we won't do early stopping or save/load. 
@@ -355,7 +357,7 @@ class Analyze_XY:
         ax.legend()
         
         # Save the plot to file
-        plt.savefig('Plots/Train Test Scores/V%d_L%d_M%d_N%d_%s.png' % (int(self.X_vortex), self.L, self.M, self.N, model_s) )
+        plt.savefig('Plots/TrainTestScores/V%d_L%d_M%d_N%d_%s.png' % (int(self.X_vortex), self.L, self.M, self.N, model_s) )
         
         # Save a graph of the model
         plot_model(model, to_file = 'Plots/Model Graphs/%s.png' % (model_s)  )
@@ -425,6 +427,15 @@ class Analyze_XY:
         if self.verbose:
             print('CNN determined $T_{KT} = %.2f. MCMC determined T_{KT} = %.2f' % (self.tkt[model_s], self.tkt['MCMC']))
         
+        ### !!! Method 2 !!! ### s
+        ########################
+        
+        # Here we aim to grab all states which the network is highly uncertain about, e.g. p ~ .5
+        # We then calculate their energy, average and get the corresponding temperature
+        
+        
+        ########################
+        ### !!! Method 2 !!! ### e
         
         # Figures, plots and oranges. Myyy preciousssss orangesssss. 
         fig = plt.figure()
@@ -504,7 +515,6 @@ class Analyze_XY:
         
         plt.xlabel('Predicted')
         plt.ylabel('Truth')
-        plt.show()
         plt.savefig('Plots/Confusion Matrix/V%d_L%d_M%d_N%d_%s.png' % (int(self.X_vortex), self.L, self.M, self.N, model_s) )
         
         if self.plotty:
@@ -553,7 +563,7 @@ class Analyze_XY:
             # Match to instance parameters
             if re.search(fid, fn):                
                 # Extract accuracy
-                pat = '_Acc0.[0-9]+_'
+                pat = '_Acc[01].[0-9]+_'
                 match = re.search(pat, fn).group(0).rstrip('_').lstrip('_Acc')
                 acc = np.float32(match)
                 
@@ -822,7 +832,7 @@ if __name__ == '__main__':
     fname = 'L7_M500_N5'
 #    fname = 'L16_M5000_N1'
     # Finds TKT by itself, but worth inspecting manually as well
-    axy = Analyze_XY(fname, plotty = False, subsample = 1, boost_nn = True)
+    axy = Analyze_XY(fname, plotty = False, subsample = 1, boost_nn = False, X_vortex = False)
 #    print(axy.tkt)
 #    axy.plot()
     
@@ -832,7 +842,8 @@ if __name__ == '__main__':
 #    model = '3xConv2xDropDense'
 #    model = '2xConvPoolDrop'
 #    model = 'ResNet50'
-    model = 'nnsimpler'
+    model = 'nnsimple'
+#    model = 'nndeep'
     axy.train_net(model)
     
     # Load a model and locate decision boundary

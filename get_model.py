@@ -45,6 +45,7 @@ def enumerate_models():
     cnns = [
             '3xConv2xDropDense',
             '2xConvConvPoolDrop',
+            '3xConvConvPoolDrop',
             '2xConvPoolDrop',
             '3xConvPoolDrop',
             'ResNet50',
@@ -54,7 +55,9 @@ def enumerate_models():
             ]
     nns = [
             'nnsimple',
-            'nnsimpler'
+            'nnsimpler',
+            'nndeep',
+            'nnmlp'
             ]
     
     return  cnns, nns
@@ -83,7 +86,7 @@ def get_model(model, input_shape):
     2xConvPoolDrop
     3xConvPoolDrop
     
-    Idea: Now we assume the XY stat can be accurately classified using single conv layers, e.g.
+    Idea: Now we assume the XY state can be accurately classified using single conv layers, e.g.
           less non-linearity needed. We also reduce the amount of regularization significantly
           compared to the ConvConvDropPool approach.
     
@@ -163,8 +166,7 @@ def get_model(model, input_shape):
         model.add(Dropout(.3))
         model.add(Dense(n_classes, activation = 'softmax'))
     
-    
-    elif model == '3xConv2xDropDense': # Score: .8962
+    elif model == '3xConv2xDropDense': 
         model = Sequential()
         model.add(Conv2D(64, kernel_size=(3, 3),
                          activation='relu',
@@ -178,6 +180,29 @@ def get_model(model, input_shape):
         model.add(Dense(128, activation='relu'))
         model.add(Dropout(0.5))
         model.add(Dense(n_classes, activation='softmax'))
+        
+    elif model == '3xConvConvPoolDrop':
+        model = Sequential()
+        model.add(Conv2D(32, (3, 3), activation = 'relu',
+                         input_shape = input_shape, padding = 'same'))
+        model.add(Conv2D(32, (3, 3), activation = 'relu', padding = 'same'))
+        model.add(MaxPooling2D(pool_size=(2, 2), padding = 'same'))
+        model.add(Dropout(0.25))
+        
+        model.add(Conv2D(64, (3, 3), padding='same', activation = 'relu'))
+        model.add(Conv2D(64, (3, 3), activation = 'relu', padding = 'same'))
+        model.add(MaxPooling2D(pool_size=(2, 2), padding = 'same'))
+        model.add(Dropout(0.25))
+        
+        model.add(Conv2D(128, (3, 3), padding='same', activation = 'relu'))
+        model.add(Conv2D(128, (3, 3), activation = 'relu', padding = 'same'))
+        model.add(MaxPooling2D(pool_size=(2, 2), padding = 'same'))
+        model.add(Dropout(0.35))
+        
+        model.add(Flatten())
+        model.add(Dense(512, activation = 'relu'))
+        model.add(Dropout(0.5))
+        model.add(Dense(n_classes, activation = 'softmax'))
         
     elif model == '2xConvConvPoolDrop':
         model = Sequential()
@@ -247,7 +272,16 @@ def get_model(model, input_shape):
         model.add(Dropout(.25))
         model.add(Dense(128, activation = 'relu'))
         model.add(Dropout(.1))
-        model.add(Dense(1, activation = 'softmax'))
+        model.add(Dense(n_classes, activation = 'softmax'))
+    elif model == 'nndeep':
+        model = Sequential()
+        model.add(Dense(128, activation = 'relu'))
+        model.add(Dropout(.5))
+        model.add(Dense(128, activation = 'relu'))
+        model.add(Dropout(.5))
+        model.add(Dense(128, activation = 'relu'))
+        model.add(Dropout(.5))
+        model.add(Dense(n_classes, activation = 'softmax'))
     
     # Compile model before returning       
     model.compile(loss=keras.losses.binary_crossentropy,

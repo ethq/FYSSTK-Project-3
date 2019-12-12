@@ -18,13 +18,15 @@ Takes an extreme amount of time, at least on L > 16
 """
 
 # Design matrix filename
-x_name = 'Data/Design matrix/X_V0_L16_M5000_N1.npy'
+x_name = 'Data/Design matrix/X_V0_L32_M1000_N1.npy'
 
 # Regular labels filename
-l_name = 'Data/Design matrix/L_V0_L16_M5000_N1.npy' 
+l_name = 'Data/Design matrix/L_V0_L32_M1000_N1.npy' 
 
 # Energy labels filename
-el_name = 'Data/Design matrix/EL_V0_L16_M5000_N1.npy'
+el_name = 'Data/Design matrix/EL_V0_L32_M1000_N1.npy'
+
+L = 32
 
 # Attempt to load from file
 try:
@@ -35,7 +37,23 @@ try:
     print('Loaded design matrix from file.')
 except:
     print('Failure')
+    
+def restore_energy_labels(self):
+    xy = XY(T = 1, L = self.L)
+    return np.array([xy.get_energy(np.reshape(s, (L, L))) for s in X])
 
+# Generate new instances to fix any class imbalance(relevant for (16,) set)
+sm = SMOTE()
+X, labels = sm.fit_resample(X, labels)
 
-#s = SMOTE()
-#X, y = s.fit_resample(X, y)
+# Recalculate energy for SMOTEd instances
+e_labels = restore_energy_labels()
+
+x_name = "Data/Design matrix/X_SM_V0_L32_M1000_N1.npy"
+l_name = "Data/Design matrix/L_SM_V0_L32_M1000_N1.npy"
+el_name = "Data/Design matrix/EL_SM_V0_L32_M1000_N1.npy"
+
+# Save to file
+np.save(x_name, X)
+np.save(l_name, np.array(labels))
+np.save(el_name, np.array(e_labels))
