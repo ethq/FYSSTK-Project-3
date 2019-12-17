@@ -13,3 +13,6 @@ Plots will be shown if the corresponding flag is set, but they are always saved.
 Training is done through .train_nn(). For a list of possible models, see get_model.py. Models are saved on checkpoints to Models/ for re-use. Saves plots of training history and the confusion matrix.
 
 To find the critical temperature predicted by a model, use .tkt_from_pred(). If a pre-trained model exists, it will be loaded. Saves plots of prediction probabilities for states at any given temperature.
+
+
+The (32, 1000, 1) dataset has not been uploaded, as it's about 500 MB in size. 
