@@ -1,9 +1,20 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{PhysRevB.97.045207}
 Matthew J.~S. Beach, Anna Golubeva, and Roger~G. Melko.
 \newblock Machine learning vortices at the kosterlitz-thouless transition.
 \newblock {\em Phys. Rev. B}, 97:045207, Jan 2018.
+
+\bibitem{onsager}
+L.~Onsager.
+\newblock {\em Il Nuovo Cimento}, 6(279), 1949.
+
+\bibitem{Gauthier1264}
+Guillaume Gauthier, Matthew~T. Reeves, Xiaoquan Yu, Ashton~S. Bradley, Mark~A.
+  Baker, Thomas~A. Bell, Halina Rubinsztein-Dunlop, Matthew~J. Davis, and
+  Tyler~W. Neely.
+\newblock Giant vortex clusters in a two-dimensional quantum fluid.
+\newblock {\em Science}, 364(6447):1264--1267, 2019.
 
 \bibitem{PhysRevLett.17.1133}
 N.~D. Mermin and H.~Wagner.
@@ -16,6 +27,13 @@ Peter Olsson and Petter Minnhagen.
 \newblock On the helicity modulus, the critical temperature and monte carlo
   simulations for the two-dimensional {XY}-model.
 \newblock {\em Physica Scripta}, 43(2):203--209, feb 1991.
+
+\bibitem{Hinton2012ImprovingNN}
+Geoffrey~E. Hinton, Nitish Srivastava, Alex Krizhevsky, Ilya Sutskever, and
+  Ruslan Salakhutdinov.
+\newblock Improving neural networks by preventing co-adaptation of feature
+  detectors.
+\newblock {\em ArXiv}, abs/1207.0580, 2012.
 
 \bibitem{LeCun2012}
 Yann~A. LeCun, L{\'e}on Bottou, Genevieve~B. Orr, and Klaus-Robert M{\"u}ller.

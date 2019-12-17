@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6800 64-bit) (preloaded format=pdflatex 2018.9.5)  5 DEC 2019 14:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6800 64-bit) (preloaded format=pdflatex 2018.9.5)  17 DEC 2019 16:07
 entering extended mode
 **./project_3.tex
 (project_3.tex
@@ -710,77 +710,207 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {C:/Users/Zak/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3]
-<residual_block.png, id=91, 572.1375pt x 330.23375pt>
+<residual_block.png, id=120, 572.1375pt x 330.23375pt>
 File: residual_block.png Graphic file (type png)
 <use residual_block.png>
-Package pdftex.def Info: residual_block.png  used on input line 89.
+Package pdftex.def Info: residual_block.png  used on input line 93.
 (pdftex.def)             Requested size: 200.75073pt x 115.87076pt.
+ [4]
 
-Overfull \hbox (3.94513pt too wide) in paragraph at lines 123--126
-\OT1/cmr/m/n/10 Hin-ton pa-per https://machinelearningmastery.com/machine-learn
-ing-ensembles-
- []
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 127.
 
-[4pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 127.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 127.
+
+[5pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.126 
-       <./residual_block.png (PNG copy)>]
-
-LaTeX Warning: Reference `fig:energy_heatcap_example' on page 5 undefined on in
-put line 128.
-
-
-LaTeX Warning: Reference `fig:tkt_scaling_L' on page 5 undefined on input line 
-132.
-
-(project_3.bbl [5pdfTeX warning (ext4): destination with the same identifier (n
-ame{algocf.1}) has been already used, duplicate ignored
+l.129 
+       <./residual_block.png (PNG copy)>] [6pdfTeX warning (ext4): destination 
+with the same identifier (name{algocf.1}) has been already used, duplicate igno
+red
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1 \begin{thebibliography}{1}
-                              ]) [6]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 142.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 142.
- (project_3.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 142.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 142.
+l.136 \end{align}
+                 ]
+Overfull \hbox (17.83022pt too wide) in paragraph at lines 157--159
+\OT1/cmr/m/n/10 Where we have used stan-dard no-ta-tion, e.g. $\OML/cmm/m/it/10
+ tp \OT1/cmr/m/n/10 = []\OML/cmm/m/it/10 ; fn \OT1/cmr/m/n/10 = []$
+ []
+
+[7]
+<../Plots/Tkt_scaling_with_lattice_2.png, id=161, 676.4472pt x 344.0052pt>
+File: ../Plots/Tkt_scaling_with_lattice_2.png Graphic file (type png)
+<use ../Plots/Tkt_scaling_with_lattice_2.png>
+Package pdftex.def Info: ../Plots/Tkt_scaling_with_lattice_2.png  used on input
+ line 182.
+(pdftex.def)             Requested size: 281.05103pt x 142.92746pt.
+ [8]
+<../Plots/Predictions/MCMC_V0_L7_M500_N5.png, id=171, 462.528pt x 346.896pt>
+File: ../Plots/Predictions/MCMC_V0_L7_M500_N5.png Graphic file (type png)
+<use ../Plots/Predictions/MCMC_V0_L7_M500_N5.png>
+Package pdftex.def Info: ../Plots/Predictions/MCMC_V0_L7_M500_N5.png  used on i
+nput line 189.
+(pdftex.def)             Requested size: 200.75073pt x 150.56506pt.
+<../Plots/Predictions/CNN_V0_L7_M500_N5_2xConvConvPoolDrop.png, id=172, 462.528
+pt x 346.896pt>
+File: ../Plots/Predictions/CNN_V0_L7_M500_N5_2xConvConvPoolDrop.png Graphic fil
+e (type png)
+<use ../Plots/Predictions/CNN_V0_L7_M500_N5_2xConvConvPoolDrop.png>
+Package pdftex.def Info: ../Plots/Predictions/CNN_V0_L7_M500_N5_2xConvConvPoolD
+rop.png  used on input line 190.
+(pdftex.def)             Requested size: 200.75073pt x 150.56506pt.
+
+Overfull \hbox (20.79575pt too wide) in paragraph at lines 188--191
+[]  [] []
+ []
+
+<../Plots/nn_gridsearch_neurons_lr.png, id=174, 1387.584pt x 685.8423pt>
+File: ../Plots/nn_gridsearch_neurons_lr.png Graphic file (type png)
+<use ../Plots/nn_gridsearch_neurons_lr.png>
+Package pdftex.def Info: ../Plots/nn_gridsearch_neurons_lr.png  used on input l
+ine 202.
+(pdftex.def)             Requested size: 602.2522pt x 297.66922pt.
+
+Overfull \hbox (139.02397pt too wide) in paragraph at lines 201--204
+[]  []
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[9pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.208 \begin{itemize}
+                      <../Plots/Tkt_scaling_with_lattice_2.png>] [10pdfTeX warn
+ing (ext4): destination with the same identifier (name{figure.3}) has been alre
+ady used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.208 \begin{itemize}
+                      <../Plots/Predictions/MCMC_V0_L7_M500_N5.png> <../Plots/P
+redictions/CNN_V0_L7_M500_N5_2xConvConvPoolDrop.png>] [11pdfTeX warning (ext4):
+ destination with the same identifier (name{table.1}) has been already used, du
+plicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.238 
+      ] [12]
+<../Plots/TrainTestScores/V0_L7_M500_N5_2xConvConvPoolDrop.png, id=206, 462.528
+pt x 346.896pt>
+File: ../Plots/TrainTestScores/V0_L7_M500_N5_2xConvConvPoolDrop.png Graphic fil
+e (type png)
+<use ../Plots/TrainTestScores/V0_L7_M500_N5_2xConvConvPoolDrop.png>
+Package pdftex.def Info: ../Plots/TrainTestScores/V0_L7_M500_N5_2xConvConvPoolD
+rop.png  used on input line 284.
+(pdftex.def)             Requested size: 200.75073pt x 150.56506pt.
+<../Plots/TrainTestScores/V1_L7_M500_N5_2xConvConvPoolDrop.png, id=207, 462.528
+pt x 346.896pt>
+File: ../Plots/TrainTestScores/V1_L7_M500_N5_2xConvConvPoolDrop.png Graphic fil
+e (type png)
+<use ../Plots/TrainTestScores/V1_L7_M500_N5_2xConvConvPoolDrop.png>
+Package pdftex.def Info: ../Plots/TrainTestScores/V1_L7_M500_N5_2xConvConvPoolD
+rop.png  used on input line 285.
+(pdftex.def)             Requested size: 200.75073pt x 150.56506pt.
+
+Overfull \hbox (30.83328pt too wide) in paragraph at lines 283--286
+[]  [] []
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[13pdfTeX warning (ext4): destination with the same identifier (name{table.2}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.295 
+      pdfTeX warning (ext4): destination with the same identifier (name{table.3
+}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.295 
+      ]
+Overfull \hbox (12.11461pt too wide) in paragraph at lines 298--310
+ [][] 
+ []
+
+[14pdfTeX warning (ext4): destination with the same identifier (name{table.4}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.317 
+      ] [15] (project_3.bbl) [16]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 337.
+ [17pdfTeX warning (ext4): destination with the same identifier (name{figure.4}
+) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.337 \end{document}
+                     <../Plots/nn_gridsearch_neurons_lr.png>] [18pdfTeX warning
+ (ext4): destination with the same identifier (name{figure.5}) has been already
+ used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.337 \end{document}
+                     <../Plots/TrainTestScores/V0_L7_M500_N5_2xConvConvPoolDrop
+.png> <../Plots/TrainTestScores/V1_L7_M500_N5_2xConvConvPoolDrop.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 337.
+
+(project_3.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 337.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 337.
 Package rerunfilecheck Info: File `project_3.out' has not changed.
-(rerunfilecheck)             Checksum: B1A9BC0B00265B470F0D9487914EC4A4;460.
-
-
-LaTeX Warning: There were undefined references.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 142.
+(rerunfilecheck)             Checksum: 3416808D55862C353CF57EF421104C6D;891.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 337.
  ) 
 Here is how much of TeX's memory you used:
- 18791 strings out of 492973
- 340256 string characters out of 3139927
- 614646 words of memory out of 3000000
- 22282 multiletter control sequences out of 15000+200000
+ 18884 strings out of 492973
+ 342547 string characters out of 3139927
+ 619646 words of memory out of 3000000
+ 22324 multiletter control sequences out of 15000+200000
  19393 words of font info for 72 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,13n,72p,1462b,473s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 62i,13n,72p,1480b,473s stack positions out of 5000i,500n,10000p,200000b,50000s
 <D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><D:/Programs/Mi
 KTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><D:/Programs/MiKTeX/fonts/type1/
-public/amsfonts/cm/cmbx9.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm
-/cmex10.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><D:/P
-rograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><D:/Programs/MiKTeX/fon
-ts/type1/public/amsfonts/cm/cmr10.pfb><D:/Programs/MiKTeX/fonts/type1/public/am
-sfonts/cm/cmr12.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pf
-b><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><D:/Programs/MiKT
-eX/fonts/type1/public/amsfonts/cm/cmr7.pfb><D:/Programs/MiKTeX/fonts/type1/publ
-ic/amsfonts/cm/cmr8.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9
-.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><D:/Programs
-/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><D:/Programs/MiKTeX/fonts/type
-1/public/amsfonts/cm/cmti10.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts
-/cm/cmtt9.pfb>
-Output written on project_3.pdf (6 pages, 262701 bytes).
+public/amsfonts/cm/cmbx8.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm
+/cmbx9.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><D:/Pr
+ograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><D:/Programs/MiKTeX/fon
+ts/type1/public/amsfonts/cm/cmmi12.pfb><D:/Programs/MiKTeX/fonts/type1/public/a
+msfonts/cm/cmmi7.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.p
+fb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><D:/Programs/Mi
+KTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><D:/Programs/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmr17.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
+cmr6.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><D:/Progra
+ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><D:/Programs/MiKTeX/fonts/typ
+e1/public/amsfonts/cm/cmr9.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/
+cm/cmsy10.pfb><D:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><D:/
+Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><D:/Programs/MiKTeX/fo
+nts/type1/public/amsfonts/cm/cmti10.pfb><D:/Programs/MiKTeX/fonts/type1/public/
+amsfonts/cm/cmtt9.pfb>
+Output written on project_3.pdf (18 pages, 649731 bytes).
 PDF statistics:
- 176 PDF objects out of 1000 (max. 8388607)
- 33 named destinations out of 1000 (max. 500000)
- 82 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 332 PDF objects out of 1000 (max. 8388607)
+ 75 named destinations out of 1000 (max. 500000)
+ 160 words of extra memory for PDF output out of 10000 (max. 10000000)
 

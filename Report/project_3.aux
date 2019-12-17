@@ -17,31 +17,60 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \citation{PhysRevB.97.045207}
-\citation{PhysRevLett.17.1133}
+\citation{onsager}
+\citation{Gauthier1264}
 \providecommand \oddpage@label [2]{}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Formalism}{1}{section.2}}
+\citation{PhysRevLett.17.1133}
 \citation{Olsson_1991}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Formalism}{2}{section.2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Convolutional neural nets}{2}{subsection.2.1}}
+\citation{Hinton2012ImprovingNN}
 \citation{LeCun2012}
 \citation{degrad}
 \citation{resnet}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Residual nets}{3}{subsubsection.2.1.1}}
 \citation{resnet}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces A residual block, figure taken from ref. \cite  {resnet}}}{4}{figure.1}}
-\newlabel{fig:residual_block}{{1}{4}{A residual block, figure taken from ref. \cite {resnet}}{figure.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{4}{section.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Data generation}{4}{subsection.3.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Residual nets}{4}{subsection.2.2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces A residual block, figure taken from ref. \cite  {resnet}}}{5}{figure.1}}
+\newlabel{fig:residual_block}{{1}{5}{A residual block, figure taken from ref. \cite {resnet}}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Transfer learning}{5}{subsection.2.3}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{5}{section.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Data generation}{5}{subsection.3.1}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces The Metropolis algorithm. Above we illustrate a full sweep, e.g. an MCMC step applied to each spin in the system.}}{6}{algocf.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Locating $T_\text  {KT}$ from neural net predictions}{6}{subsection.3.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Spin- to vortex-configuration conversion}{6}{subsection.3.3}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Resampling and scoring}{7}{subsubsection.3.3.1}}
 \citation{PhysRevLett.39.1201}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{8}{section.4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Scaling of $T_\text  {KT}$ as inferred by the maximum of the heat capacity measured on different lattice sizes. For $M = 500$ measurements, the scaling is clearly wrong. For this reason we haven't bothered to plot any more datapoints. For $M = 5000$ measurements, the computational cost is extremely heavy(on my machine, it took three full days to generate (16, 5000, 1) for example). For this reason, we have but two datapoints. Of some comfort is that the slope now has the correct sign. The value of $T_\text  {KT}^\infty $ - inferred from the intercept - is 1.27, 1.17 and 1.14 respectively, all off from the true value of 0.89. Note that the measurements on small lattices are more noisy than those on large lattices, as expected. Disregarding the datapoints from L = 4 and L = 8, the $M = 1000$ measurements yield an intercept of $T_\text  {KT}^\infty = 1.10$. Visually it seems that the fit is rotated counter-clockwise as measurements are increased; we believe correct results will be obtained by increasing the number of measurements and/or time allowed to relax to equilibrium. }}{9}{figure.2}}
+\newlabel{fig:tkt_scaling_L}{{2}{9}{Scaling of $T_\text {KT}$ as inferred by the maximum of the heat capacity measured on different lattice sizes. For $M = 500$ measurements, the scaling is clearly wrong. For this reason we haven't bothered to plot any more datapoints. For $M = 5000$ measurements, the computational cost is extremely heavy(on my machine, it took three full days to generate (16, 5000, 1) for example). For this reason, we have but two datapoints. Of some comfort is that the slope now has the correct sign. The value of $T_\text {KT}^\infty $ - inferred from the intercept - is 1.27, 1.17 and 1.14 respectively, all off from the true value of 0.89. Note that the measurements on small lattices are more noisy than those on large lattices, as expected. Disregarding the datapoints from L = 4 and L = 8, the $M = 1000$ measurements yield an intercept of $T_\text {KT}^\infty = 1.10$. Visually it seems that the fit is rotated counter-clockwise as measurements are increased; we believe correct results will be obtained by increasing the number of measurements and/or time allowed to relax to equilibrium}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Neural nets}{9}{subsection.4.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Dataset used: (7, 500, 5). \textbf  {Left:} Energy and heat capacity as function of temperature. We plot only every third datapoint for clarity. We interpolate the curves with 10th order polynomials, which slightly overfits and yields the odd edge effects. $T_\text  {KT}$ is inferred from the maximum of the heat capacity. The lack of a discontinuity signifies that it is a phase transition of infinite order. \textbf  {Right:} Convolutional network prediction of $T_\text  {KT}$, trained on raw spin configuration. Architecture used: 3xConv2xDropDense(see Plots/Model Graphs/ on GitHub). We assume that a rough decision boundary can be plotted as a function of energy. As the ConvNet does not have access to temperature information, we instead plot probabilities versus energy and average, as $\delimiter "426830A E \delimiter "526930B \leftrightarrow T$ should be 1-1 in the limit of infinite measurements. We then identify the critical temperature with the point where the ConvNet is most uncertain about how to classify a state.}}{10}{figure.3}}
+\newlabel{fig:energy_heatcap_example}{{3}{10}{Dataset used: (7, 500, 5). \textbf {Left:} Energy and heat capacity as function of temperature. We plot only every third datapoint for clarity. We interpolate the curves with 10th order polynomials, which slightly overfits and yields the odd edge effects. $T_\text {KT}$ is inferred from the maximum of the heat capacity. The lack of a discontinuity signifies that it is a phase transition of infinite order. \textbf {Right:} Convolutional network prediction of $T_\text {KT}$, trained on raw spin configuration. Architecture used: 3xConv2xDropDense(see Plots/Model Graphs/ on GitHub). We assume that a rough decision boundary can be plotted as a function of energy. As the ConvNet does not have access to temperature information, we instead plot probabilities versus energy and average, as $\langle E \rangle \leftrightarrow T$ should be 1-1 in the limit of infinite measurements. We then identify the critical temperature with the point where the ConvNet is most uncertain about how to classify a state}{figure.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Classification accuracy on test set, predicted critical temperature and deviation from critical temperature determined from the heat capacity for various neural net configurations. Training on vortex configurations yields decidedly the worst results. Going from 128 $\to $ 512 neurons is practically ineffective. On the spin configuration, the deepest net performs the worst by a small margin. If we look at the training history(see GitHub), there are indications that the training loss is leveling off, e.g. that this is due to saturation - as in our discussion of ResNets - and not necessarily overfitting. The nets are trained on a balanced dataset, and we see that F1-scores are comparable to the accuracies as expected.}}{11}{table.1}}
+\newlabel{tab:nn_scores}{{1}{11}{Classification accuracy on test set, predicted critical temperature and deviation from critical temperature determined from the heat capacity for various neural net configurations. Training on vortex configurations yields decidedly the worst results. Going from 128 $\to $ 512 neurons is practically ineffective. On the spin configuration, the deepest net performs the worst by a small margin. If we look at the training history(see GitHub), there are indications that the training loss is leveling off, e.g. that this is due to saturation - as in our discussion of ResNets - and not necessarily overfitting. The nets are trained on a balanced dataset, and we see that F1-scores are comparable to the accuracies as expected}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Convolutional nets}{12}{subsection.4.2}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Classification accuracy on test set, predicted critical temperature and deviation from critical temperature determined from the heat capacity for various convolutional net architectures. These nets have been trained on raw spin configurations. As suspected, the two deep variants outperform the shallower nets by a fair amount.}}{13}{table.2}}
+\newlabel{tab:cnn_scores}{{2}{13}{Classification accuracy on test set, predicted critical temperature and deviation from critical temperature determined from the heat capacity for various convolutional net architectures. These nets have been trained on raw spin configurations. As suspected, the two deep variants outperform the shallower nets by a fair amount}{table.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Classification accuracy on test set, predicted critical temperature and deviation from critical temperature determined from the heat capacity for various convolutional net architectures. These nets have been trained on vortex configurations. Note that the model with the highest accuracy predicts the worst $T_\text  {KT}$. While a little odd, it's not terribly surprising. The predictions are so bad that taking averages over them cannot be expected to yield the most sensible results(see the corresponding images on Plots/Predictions/). }}{13}{table.3}}
+\newlabel{tab:cnn_scores_vortex}{{3}{13}{Classification accuracy on test set, predicted critical temperature and deviation from critical temperature determined from the heat capacity for various convolutional net architectures. These nets have been trained on vortex configurations. Note that the model with the highest accuracy predicts the worst $T_\text {KT}$. While a little odd, it's not terribly surprising. The predictions are so bad that taking averages over them cannot be expected to yield the most sensible results(see the corresponding images on Plots/Predictions/)}{table.3}{}}
+\citation{PhysRevB.97.045207}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Scores for our nets trained on (32, 1000, 1), no resampling strategy was used. Regardless of class imbalance the F1-scores are still very high, indicating that the nets avoid the tendency to simply guess the majority class. When $\Delta T_\text  {KT}$ is given as zero, it is so to numerical precision. Using 64-bit floats this corresponds to an error less than $10^{-16}$. It is quite puzzling that the models with $|\Delta T_\text  {KT}| > 0$ predict the exact same $T_\text  {KT}$ up to $10^{-16}$, even though their accuracies vary by up to 20\%. Performancewise all nets except 3xConv2xDropDense take a few minutes to train; the aforementioned net takes around two hours. As it performs identically to 2xConvConvPoolDrop, the choice for future training is clear.}}{14}{table.4}}
+\newlabel{tab:cnn_scores_32}{{4}{14}{Scores for our nets trained on (32, 1000, 1), no resampling strategy was used. Regardless of class imbalance the F1-scores are still very high, indicating that the nets avoid the tendency to simply guess the majority class. When $\Delta T_\text {KT}$ is given as zero, it is so to numerical precision. Using 64-bit floats this corresponds to an error less than $10^{-16}$. It is quite puzzling that the models with $|\Delta T_\text {KT}| > 0$ predict the exact same $T_\text {KT}$ up to $10^{-16}$, even though their accuracies vary by up to 20\%. Performancewise all nets except 3xConv2xDropDense take a few minutes to train; the aforementioned net takes around two hours. As it performs identically to 2xConvConvPoolDrop, the choice for future training is clear}{table.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{15}{section.5}}
 \bibstyle{unsrt}
 \bibdata{bib}
-\@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces The Metropolis algorithm. Above we illustrate a full sweep, e.g. an MCMC step applied to each spin in the system.}}{5}{algocf.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{5}{section.4}}
 \bibcite{PhysRevB.97.045207}{1}
-\bibcite{PhysRevLett.17.1133}{2}
-\bibcite{Olsson_1991}{3}
-\bibcite{LeCun2012}{4}
-\bibcite{degrad}{5}
-\bibcite{resnet}{6}
-\bibcite{PhysRevLett.39.1201}{7}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Convolutional nets}{6}{subsection.4.1}}
+\bibcite{onsager}{2}
+\bibcite{Gauthier1264}{3}
+\bibcite{PhysRevLett.17.1133}{4}
+\bibcite{Olsson_1991}{5}
+\bibcite{Hinton2012ImprovingNN}{6}
+\bibcite{LeCun2012}{7}
+\bibcite{degrad}{8}
+\bibcite{resnet}{9}
+\bibcite{PhysRevLett.39.1201}{10}
+\newlabel{fig:neuralnet_75005_gsv}{{4.1}{17}{Neural nets}{subsection.4.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Gridsearch over neuron number/learning rate. We see that for high learning rates, the high scores are concentrated in the upper right corner, e.g. both hidden layers have a high number of neurons. This seems not to be true as the learning rate decreases, e.g. lower number of hidden neurons in the second hidden layer seems advantageous. This should just be due to non-convergence - if the gridsearch had been run for some more epochs, I believe the same pattern would emerge: more neurons is simply better - as long as we don't overfit.}}{17}{figure.4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Training history for (7, 500, 5) on the 2xConvConvPoolDrop architecture. \textbf  {Left:} Training on raw spin configuration. \textbf  {Right:} Training on vortex configuration. We see clearly that overfitting begins much earlier when we train on the vortex configuration, indicating sparseness of information in that dataset. Though regularization delays the onset of overfitting, we have not been able to increase the accuracy either by increasing dropout rate or the L$_2$-penalty. }}{18}{figure.5}}
+\newlabel{fig:train_val_history_cnn}{{5}{18}{Training history for (7, 500, 5) on the 2xConvConvPoolDrop architecture. \textbf {Left:} Training on raw spin configuration. \textbf {Right:} Training on vortex configuration. We see clearly that overfitting begins much earlier when we train on the vortex configuration, indicating sparseness of information in that dataset. Though regularization delays the onset of overfitting, we have not been able to increase the accuracy either by increasing dropout rate or the L$_2$-penalty}{figure.5}{}}
