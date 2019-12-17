@@ -15,4 +15,4 @@ Training is done through .train_nn(). For a list of possible models, see get_mod
 To find the critical temperature predicted by a model, use .tkt_from_pred(). If a pre-trained model exists, it will be loaded. Saves plots of prediction probabilities for states at any given temperature.
 
 
-The (32, 1000, 1) dataset has not been uploaded, as it's about 500 MB in size. 
+The (16, 5000, 1) and (32, 1000, 1) datasets have not been uploaded, as they are about 250 and 500 MB in size respectively.
