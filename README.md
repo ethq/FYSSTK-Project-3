@@ -2,7 +2,7 @@
 
 To create a dataset, use create_xy_data.py. Saves to Data/
 
-To analyze the dataset, use the (enormous) state machine Analyze_XY.py
+To analyze the dataset, use the (monstrous) state machine Analyze_XY.py
 Upon initialization with a dataset, it will 
     1) Create/load a design matrix
     2) Do a polynomial fit to the averaged energy(temperature) curve
