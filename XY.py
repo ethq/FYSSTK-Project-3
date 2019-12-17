@@ -18,6 +18,16 @@ from numpy import pi
 from itertools import product
 from tqdm import tqdm
 
+"""
+Class for generating states of the XY model and measuring observables on them
+
+Input:
+    T: Temperature,
+    L: Lattice dimensions,
+    tol: Equilibration tolerance
+    max_sweeps: Max allowed iterations for equilibration
+"""
+
 class XY:
     def __init__(self, 
                  T = 1,
@@ -207,9 +217,9 @@ class XY:
         
         
         energies = []
-        beta = 1 / self.T
         energy_temp = 0
         
+        # Minimum steps for equilibration
         min_eq = 200
         for k in np.arange(self.max_sweeps):
             self.sweep()     
@@ -217,6 +227,7 @@ class XY:
             energy = self.get_energy()
             energies.append( energy )
             
+            # Reached equilibrium?
             if (abs(energy-energy_temp)/abs(energy) < self.tol) and k > min_eq:
                 tqdm.write('Eq reached at T = %.1f, E = %.2f, sweep #%d' % (self.T,energy, k))
                 break
@@ -224,9 +235,6 @@ class XY:
         
         nstates = len(energies)
         energy = np.mean(energies[int(nstates/2):])
-#        self.energy = energy
-        energy2 = np.mean(np.array(energies[int(nstates/2):])**2)
-#        self.Cv=(energy2-energy**2)*beta**2
 
     """
     
@@ -264,49 +272,19 @@ class XY:
             # Store state
             if store_states:
                 states.append(self.spin_config.copy())
-#                print(self.spin_config[0,0])
             
             # Measure observables
             for k in results.keys():
-#                res = observables[k](self.spin_config)
-#                print(self.spin_config)
                 results[k] += observables[k](self.spin_config)
-#                print(observables[k](self.spin_config))
-#                print(self.spin_config)
         
         # Average
         for k, v in results.items():
             results[k] = v/m_callback
             
         if store_states:
-#            for s in states:
-#                for s2 in states:
-#                    if np.sum(s-s2):
-#                        print('DIFF', np.sum(s-s2))
             results['states'] = states
             
         return results
-    
-    
-    def annealing(self, T_init=2.5, T_final=0.1, nsteps = 20):
-        dic_thermal = {}
-        dic_thermal['temperature'] = list(np.linspace(T_init, T_final, nsteps))
-        dic_thermal['energy'] = []
-        dic_thermal['Cv'] = []
-        for T in dic_thermal['temperature']:
-            self.equilibrate(T)
-            dic_thermal['energy'] += [self.energy]
-            dic_thermal['Cv'] += [self.Cv]
-            
-        plt.plot(dic_thermal['temperature'], dic_thermal['Cv'], '.')
-        plt.ylabel(r'$C_v$')
-        plt.xlabel('T')
-        plt.show()
-        plt.plot(dic_thermal['temperature'], dic_thermal['energy'], '.')
-        plt.ylabel(r'$\langle E \rangle$')
-        plt.xlabel('T')
-        plt.show()
-        return dic_thermal
 
 
 if __name__ == '__main__':
