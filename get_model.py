@@ -12,6 +12,8 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.applications.resnet50 import ResNet50
 from keras.applications.densenet import DenseNet121, DenseNet169, DenseNet201
 
+from keras.regularizers import l1, l2
+
 import keras
 
 """
@@ -45,6 +47,7 @@ def enumerate_models():
     cnns = [
             '3xConv2xDropDense',
             '2xConvConvPoolDrop',
+            '2xConvConvPoolDropDrop',
             '3xConvConvPoolDrop',
             '2xConvPoolDrop',
             '3xConvPoolDrop',
@@ -203,7 +206,24 @@ def get_model(model, input_shape):
         model.add(Dense(512, activation = 'relu'))
         model.add(Dropout(0.5))
         model.add(Dense(n_classes, activation = 'softmax'))
+    elif model == '2xConvConvPoolDropDrop':
+        model = Sequential()
+        model.add(Conv2D(32, (3, 3), activation = 'relu',
+                         input_shape = input_shape, padding = 'same'))
+        model.add(Conv2D(32, (3, 3), activation = 'relu', padding = 'same'))
+        model.add(MaxPooling2D(pool_size=(2, 2), padding = 'same'))
+        model.add(Dropout(0.4))
         
+        model.add(Conv2D(64, (3, 3), padding='same', activation = 'relu'))
+        model.add(Conv2D(64, (3, 3), activation = 'relu', padding = 'same'))
+        model.add(MaxPooling2D(pool_size=(2, 2), padding = 'same'))
+        model.add(Dropout(0.4))
+        
+        model.add(Flatten())
+        model.add(Dense(512, activation = 'relu', kernel_regularizer = l2(0.08), bias_regularizer = l2(0.08)))
+        model.add(Dropout(0.5))
+        model.add(Dense(n_classes, activation = 'softmax'))
+    
     elif model == '2xConvConvPoolDrop':
         model = Sequential()
         model.add(Conv2D(32, (3, 3), activation = 'relu',

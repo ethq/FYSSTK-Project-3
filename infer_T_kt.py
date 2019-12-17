@@ -51,8 +51,6 @@ for fname in fnames:
     
     Tkt.append(tnew[arg_tkt])
 
-#Tkt = np.flip(Tkt)
-#Tkt = [Tkt[1], Tkt[2]]
 # Do a linear plot of tkt vs L^-2. Tkt on the infinite plane should then be the intercept
 model = make_pipeline(PolynomialFeatures(1), LinearRegression())
 model.fit(Linv[:, np.newaxis], Tkt)
@@ -80,11 +78,43 @@ plt.plot(Linv_5k, Tkt_5k, 'o')
 
 print('Predicted T_KT = %.2f' % model.steps[1][1].intercept_)
 
+# Easier to just do this manually...
+# Numbers taken from Plots/Predictions. Could also be obtained automatically by using Analyze_XY, but time and all that
+Linv = 1/np.log([4, 8, 12, 32])**2
+Tkt = [1.239, 1.124, 1.214, 1.160]
+#Linv_new = np.linspace(0.3, np.max(Linv), 100)
+
+model = make_pipeline(PolynomialFeatures(1), LinearRegression())
+model.fit(Linv[:, np.newaxis], Tkt)
+
+Tkt_pred2 = model.predict(Linv_new[:, np.newaxis])
+
+plt.plot(Linv_new, Tkt_pred2)
+plt.plot(Linv, Tkt, 'o')
+
+print('Predicted T_KT = %.2f' % model.steps[1][1].intercept_)
+
+Linv = 1/np.log([12, 32])**2
+Tkt = [1.214, 1.160]
+#Linv_new = np.linspace(0.3, np.max(Linv), 100)
+
+model = make_pipeline(PolynomialFeatures(1), LinearRegression())
+model.fit(Linv[:, np.newaxis], Tkt)
+
+Tkt_pred2 = model.predict(Linv_new[:, np.newaxis])
+
+plt.plot(Linv_new, Tkt_pred2)
+
+print('Predicted T_KT = %.2f' % model.steps[1][1].intercept_)
+
 plt.legend([
-        'Fit to $T_{KT}$ from 500 measurements',
-        '$T_{KT}$ from 500 measurements',
-        'Fit to $T_{KT}$ from 5000 measurements',
-        '$T_{KT}$ from 5000 measurements'
+        'Fit to $T_{KT}$ for M = 500',
+        '$T_{KT}$ for M = 500',
+        'Fit to $T_{KT}$ for M = 5000',
+        '$T_{KT}$ for M = 5000',
+        'Fit to $T_{KT}$ for M = 1000',
+        '$T_{KT}$ for M = 1000',
+        'Partial fit to $T_{KT}$ for M = 1000',
         ])
     
 plt.title('$T_{KT}$ scaling with lattice dimension')

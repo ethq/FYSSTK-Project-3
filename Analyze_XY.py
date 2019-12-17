@@ -40,7 +40,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import AdaBoostClassifier
 
 from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score, roc_auc_score
 
 from sklearn.linear_model import Ridge, LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
@@ -342,6 +342,20 @@ class Analyze_XY:
         if self.verbose:
             print('Test loss:', score[0])
             print('Test accuracy:', score[1])
+            
+
+        y_true = y_test[:, 1].astype(int)
+        y_pred = np.round(model.predict(x_test)[:, 1]).astype(int)
+        
+        self.AA = y_true
+        self.BB = y_pred
+        
+        print(classification_report(y_true, y_pred))
+        self.f1 = f1_score(y_true, y_pred)
+        print('F1-score: %.3f' % self.f1)
+        print(confusion_matrix(y_true, y_pred))
+        self.rocauc = roc_auc_score(y_true, y_pred)
+        self.accuracy = accuracy_score(y_true, y_pred)
         
         # Plot training history
         fig = plt.figure()
@@ -686,14 +700,18 @@ class Analyze_XY:
             # Add raveled states
             for i, s in enumerate(states):
                 X[i, :] = s.flatten()
+                
+            # Normalize and clean
+            X = X/(2*np.pi)
+            X[abs(X) < 1e-6] = 0
             
             # Save to file
-            np.save(x_name, X/(2*np.pi))
+            np.save(x_name, X)
             np.save(l_name, np.array(labels))
             np.save(el_name, np.array(e_labels))
             
             # And set instance variables
-            self.X = X/(2*np.pi)
+            self.X = X
             self.labels = np.array(labels)
             self.e_labels = np.array(e_labels)
             
@@ -832,17 +850,17 @@ if __name__ == '__main__':
     fname = 'L7_M500_N5'
 #    fname = 'L16_M5000_N1'
     # Finds TKT by itself, but worth inspecting manually as well
-    axy = Analyze_XY(fname, plotty = False, subsample = 1, boost_nn = False, X_vortex = False)
+    axy = Analyze_XY(fname, plotty = False, subsample = 1, boost_nn = False, X_vortex = True)
 #    print(axy.tkt)
 #    axy.plot()
     
     # Ok, now we train a CNN
 #    model = '3xConvPoolDrop'
-#    model = '2xConvConvPoolDrop'
+    model = '2xConvConvPoolDrop'
 #    model = '3xConv2xDropDense'
 #    model = '2xConvPoolDrop'
 #    model = 'ResNet50'
-    model = 'nnsimple'
+#    model = 'nnsimple'
 #    model = 'nndeep'
     axy.train_net(model)
     
