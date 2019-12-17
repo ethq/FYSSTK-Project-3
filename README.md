@@ -8,7 +8,7 @@ Upon initialization with a dataset, it will
     2) Do a polynomial fit to the averaged energy(temperature) curve
     3) Calculate the heat capacity and the critical temperature from it
 
-Plots will be shown if the corresponding flag is set.
+Plots will be shown if the corresponding flag is set, but they are always saved.
 
 Training is done through .train_nn(). For a list of possible models, see get_model.py. Models are saved on checkpoints to Models/ for re-use. Saves plots of training history and the confusion matrix.
 
